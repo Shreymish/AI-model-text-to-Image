@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text-to-Image Generator (Stable Diffusion 3)</title>
+    <title>AI Image Generator by Shrey</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         .loader {
             border: 4px solid #f3f3f3;
@@ -22,36 +24,63 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .gradient-text {
+            background: linear-gradient(to right, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
     </style>
 </head>
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
-        <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden">
-            <div class="p-8">
-                <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-800 dark:text-white mb-2">Text-to-Image Generator</h1>
-                <p class="text-center text-gray-600 dark:text-gray-400 mb-6">Powered by Stability AI (Stable Diffusion 3)</p>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 bg-gradient-to-br from-gray-50 to-gray-200 dark:from-gray-900 dark:to-black transition-colors duration-500">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 min-h-screen flex flex-col items-center justify-center">
+        
+        <!-- Stylish Header with Name -->
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold tracking-widest text-indigo-400 uppercase animate-pulse">Shrey</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">AI Creations</p>
+        </div>
+
+        <div class="max-w-2xl w-full bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-2xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <div class="p-8 sm:p-10">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white mb-2">
+                        AI Image <span class="gradient-text">Generator</span>
+                    </h1>
+                    <p class="text-gray-600 dark:text-gray-400 italic">"Every pixel tells a story. Start yours now."</p>
+                </div>
 
                 <!-- Prompt Input -->
                 <div class="mb-6">
                     <label for="prompt-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Your Prompt</label>
-                    <textarea id="prompt-input" rows="3" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-150" placeholder="e.g., A photorealistic portrait of a warrior queen with intricate armor"></textarea>
+                    <textarea id="prompt-input" rows="3" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-150" placeholder="e.g., A majestic lion wearing a crown, photorealistic"></textarea>
+                </div>
+
+                <!-- Model Selection -->
+                <div class="mb-6">
+                    <label for="model-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Model</label>
+                    <select id="model-select" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition duration-150">
+                        <option value="sd3" selected>Stable Diffusion 3 (High Quality)</option>
+                        <option value="sd3-turbo">Stable Diffusion 3 Turbo (Fast)</option>
+                    </select>
                 </div>
 
                 <!-- Generate Button -->
-                <button id="generate-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-150 ease-in-out flex items-center justify-center">
-                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <button id="generate-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-all duration-300 ease-in-out flex items-center justify-center transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.562L16.25 22.5l-.648-1.938a3.375 3.375 0 00-2.684-2.684L11.25 18l1.938-.648a3.375 3.375 0 002.684-2.684L16.25 13.5l.648 1.938a3.375 3.375 0 002.684 2.684L21.75 18l-1.938.648a3.375 3.375 0 00-2.684 2.684z" />
                     </svg>
                     Generate Image
                 </button>
 
                 <!-- Image Display and Loading -->
-                <div id="image-container" class="mt-8 w-full aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600">
+                <div id="image-container" class="mt-8 w-full aspect-square bg-gray-100 dark:bg-gray-700/50 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 dark:border-gray-600">
                     <div id="loading-indicator" class="loader hidden"></div>
                     <img id="result-image" src="" alt="Generated Image" class="hidden max-w-full max-h-full rounded-lg">
                     <p id="placeholder-text" class="text-gray-500 dark:text-gray-400">Your generated image will appear here</p>
                 </div>
-
+                
                 <!-- Error Message Box -->
                 <div id="error-box" class="hidden mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
                     <strong class="font-bold">Error:</strong>
@@ -62,105 +91,98 @@
     </div>
 
     <script>
-        // DOM element references
-        const generateBtn = document.getElementById('generate-btn');
-        const promptInput = document.getElementById('prompt-input');
-        const resultImage = document.getElementById('result-image');
-        const loadingIndicator = document.getElementById('loading-indicator');
-        const placeholderText = document.getElementById('placeholder-text');
-        const errorBox = document.getElementById('error-box');
-        const errorMessage = document.getElementById('error-message');
+        document.addEventListener('DOMContentLoaded', () => {
+            const generateBtn = document.getElementById('generate-btn');
+            const promptInput = document.getElementById('prompt-input');
+            const modelSelect = document.getElementById('model-select');
+            const resultImage = document.getElementById('result-image');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const placeholderText = document.getElementById('placeholder-text');
+            const errorBox = document.getElementById('error-box');
+            const errorMessage = document.getElementById('error-message');
 
-        // --- Event Listeners ---
-        generateBtn.addEventListener('click', handleImageGeneration);
-        promptInput.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                handleImageGeneration();
-            }
-        });
+            generateBtn.addEventListener('click', handleImageGeneration);
+            promptInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    handleImageGeneration();
+                }
+            });
 
-        /**
-         * Main function to handle image generation using Stability AI's SD3 API.
-         */
-        async function handleImageGeneration() {
-            const prompt = promptInput.value.trim();
-            if (!prompt) {
-                showError('Please enter a prompt.');
-                return;
-            }
-
-            showLoadingState(true);
-            hideError();
-
-            try {
-                // --- API Call to Stability AI (SD3) to Generate Image ---
-                console.log('Generating image with Stability AI SD3 for prompt:', prompt);
-
-                // --- IMPORTANT ---
-                // Your API key has been integrated.
-                const apiKey = "sk-Lsmheh0Q0UnDVgzVhqrbqoWucvJOE5ifxfwCjkb2bp1dpffE"; 
-                const apiUrl = `https://api.stability.ai/v2beta/stable-image/generate/sd3`;
-
-                // The SD3 API uses FormData instead of JSON
-                const formData = new FormData();
-                formData.append('prompt', prompt);
-                formData.append('output_format', 'jpeg');
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        // Content-Type is not set, the browser will set it for FormData
-                        'Accept': 'image/*', 
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: formData
-                });
-
-                console.log('API Response Status:', response.status);
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('API Error Text:', errorText);
-                    throw new Error(`Request failed: ${response.status}. ${errorText}`);
+            async function handleImageGeneration() {
+                const prompt = promptInput.value.trim();
+                if (!prompt) {
+                    showError('Please enter a prompt.');
+                    return;
                 }
 
-                // The response is the image data itself, so we read it as a Blob
-                const imageBlob = await response.blob();
-                
-                // Create a URL for the blob to display it in the <img> tag
-                const imageUrl = URL.createObjectURL(imageBlob);
-                
-                resultImage.src = imageUrl;
-                resultImage.classList.remove('hidden');
-                placeholderText.classList.add('hidden');
+                showLoadingState(true);
+                hideError();
 
-            } catch (error) {
-                console.error('Full image generation error:', error);
-                showError(error.message);
-                resultImage.classList.add('hidden');
-                placeholderText.classList.remove('hidden');
-            } finally {
-                showLoadingState(false);
+                try {
+                    const selectedModel = modelSelect.value;
+                    console.log(`Generating image with model: ${selectedModel}`);
+
+                    // --- IMPORTANT ---
+                    // Your new API key has been inserted.
+                    const apiKey = "sk-gMmMhAYNxN11EHPfawKFdEHsiWptDcJekdKcZZ8nmzmIx2nO"; 
+                    const apiUrl = `https://api.stability.ai/v2beta/stable-image/generate/${selectedModel}`;
+
+                    const formData = new FormData();
+                    formData.append('prompt', prompt);
+                    formData.append('output_format', 'jpeg');
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'image/*', 
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: formData
+                    });
+
+                    console.log('API Response Status:', response.status);
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('API Error Text:', errorText);
+                        throw new Error(`Request failed: ${response.status}. ${errorText}`);
+                    }
+
+                    const imageBlob = await response.blob();
+                    const imageUrl = URL.createObjectURL(imageBlob);
+                    
+                    resultImage.src = imageUrl;
+                    resultImage.classList.remove('hidden');
+                    placeholderText.classList.add('hidden');
+
+                } catch (error) {
+                    console.error('Full image generation error:', error);
+                    showError(error.message);
+                    resultImage.classList.add('hidden');
+                    placeholderText.classList.remove('hidden');
+                } finally {
+                    showLoadingState(false);
+                }
             }
-        }
 
-        function showLoadingState(isLoading) {
-            loadingIndicator.style.display = isLoading ? 'block' : 'none';
-            placeholderText.style.display = isLoading ? 'none' : (resultImage.src ? 'none' : 'block');
-            generateBtn.disabled = isLoading;
-            generateBtn.classList.toggle('opacity-50', isLoading);
-            generateBtn.classList.toggle('cursor-not-allowed', isLoading);
-        }
+            function showLoadingState(isLoading) {
+                loadingIndicator.style.display = isLoading ? 'block' : 'none';
+                placeholderText.style.display = isLoading ? 'none' : (resultImage.src ? 'none' : 'block');
+                generateBtn.disabled = isLoading;
+                generateBtn.classList.toggle('opacity-50', isLoading);
+                generateBtn.classList.toggle('cursor-not-allowed', isLoading);
+            }
 
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorBox.classList.remove('hidden');
-        }
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorBox.classList.remove('hidden');
+            }
 
-        function hideError() {
-            errorBox.classList.add('hidden');
-        }
+            function hideError() {
+                errorBox.classList.add('hidden');
+            }
+        });
     </script>
 </body>
 </html>
