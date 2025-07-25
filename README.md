@@ -1,1 +1,0 @@
-# AI-model-text-to-Image
